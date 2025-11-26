@@ -1,17 +1,15 @@
 import EventCard from "@/components/EventCard";
 import ExploreBtn from "@/components/ExploreBtn";
 import { IEvent } from "@/database/event.model";
-import events from "@/lib/constants";
 import { cacheLife } from "next/cache";
-// import events from "@/lib/constants";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const Home = async () => {
   "use cache";
   cacheLife("hours");
-  // const response = await fetch(`${BASE_URL}/api/events`, {});
+  const response = await fetch(`${BASE_URL}/api/events`, {});
 
-  // const { events } = await response.json();
+  const { events } = await response.json();
   return (
     <section>
       <h1 className="text-center">
