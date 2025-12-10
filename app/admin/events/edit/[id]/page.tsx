@@ -1,3 +1,4 @@
+//app/admin/events/edit/[id]/page.tsx
 import { notFound } from "next/navigation";
 import connectDB from "@/lib/mongodb";
 import Event, { IEventSerialized } from "@/database/event.model";

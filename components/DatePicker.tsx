@@ -1,3 +1,4 @@
+//components/DatePicker.tsx
 "use client";
 
 import * as React from "react";
@@ -47,33 +48,33 @@ export function Calendar28({
   error,
 }: DatePickerProps) {
   const [open, setOpen] = React.useState(false);
+  const [mounted, setMounted] = React.useState(false);
 
-  // Fix: Use function initializer and validate before creating Date
-  const [date, setDate] = React.useState<Date | undefined>(() => {
-    if (value && value.trim() !== "") {
-      const newDate = new Date(value);
-      return isValidDate(newDate) ? newDate : undefined;
-    }
-    return undefined;
-  });
+  // Initialize with undefined to avoid SSR mismatch
+  const [date, setDate] = React.useState<Date | undefined>(undefined);
+  const [month, setMonth] = React.useState<Date | undefined>(undefined);
+  const [inputValue, setInputValue] = React.useState("");
 
-  const [month, setMonth] = React.useState<Date>(() => {
-    if (value && value.trim() !== "") {
-      const newDate = new Date(value);
-      return isValidDate(newDate) ? newDate : new Date();
-    }
-    return new Date();
-  });
-
-  const [inputValue, setInputValue] = React.useState(() => {
-    if (value && value.trim() !== "") {
-      const newDate = new Date(value);
-      return isValidDate(newDate) ? formatDate(newDate) : "";
-    }
-    return "";
-  });
-
+  // Run only on client side after mount
   React.useEffect(() => {
+    setMounted(true);
+
+    if (value && value.trim() !== "") {
+      const newDate = new Date(value);
+      if (isValidDate(newDate)) {
+        setDate(newDate);
+        setMonth(newDate);
+        setInputValue(formatDate(newDate));
+      }
+    } else {
+      setMonth(new Date());
+    }
+  }, []);
+
+  // Update when value prop changes
+  React.useEffect(() => {
+    if (!mounted) return;
+
     if (value && value.trim() !== "") {
       const newDate = new Date(value);
       if (isValidDate(newDate)) {
@@ -85,7 +86,7 @@ export function Calendar28({
       setDate(undefined);
       setInputValue("");
     }
-  }, [value]);
+  }, [value, mounted]);
 
   const handleDateChange = (newDate: Date | undefined) => {
     setDate(newDate);
@@ -125,16 +126,40 @@ export function Calendar28({
   };
 
   const goToPreviousMonth = () => {
+    if (!month) return;
     const newDate = new Date(month);
     newDate.setMonth(newDate.getMonth() - 1);
     setMonth(newDate);
   };
 
   const goToNextMonth = () => {
+    if (!month) return;
     const newDate = new Date(month);
     newDate.setMonth(newDate.getMonth() + 1);
     setMonth(newDate);
   };
+
+  // Don't render calendar until mounted to avoid hydration issues
+  if (!mounted) {
+    return (
+      <div className="flex flex-col gap-2">
+        <Label htmlFor="date" className="text-base font-normal text-[#E7F2FF]">
+          {label}
+        </Label>
+        <div className="relative">
+          <div className="flex bg-[#182830] border-[#243B47] text-[#DCFFF8] focus:border-[#DCFFF8] py-[6.3px] rounded-xl w-full text-base focus:outline-1">
+            <CalendarIcon className="size-[18px] pointer-events-none mt-2 absolute left-3" />
+            <Input
+              id="date"
+              placeholder={placeholder}
+              className="placeholder:text-[#DCFFF8] border-none pl-10 placeholder:text-base"
+              disabled
+            />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-2">
