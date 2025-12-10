@@ -27,7 +27,6 @@ export async function getAllEvents(): Promise<IEvent[]> {
 
     return JSON.parse(JSON.stringify(events));
   } catch (error) {
-    console.error("Error fetching events:", error);
     return [];
   }
 }
@@ -41,7 +40,6 @@ export async function deleteEvent(id: string): Promise<boolean> {
 
     return !!result;
   } catch (error) {
-    console.error("Error deleting event:", error);
     return false;
   }
 }

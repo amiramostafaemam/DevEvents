@@ -5,12 +5,7 @@ import Link from "next/link";
 
 const ExploreBtn = () => {
   return (
-    <button
-      type="button"
-      id="explore-btn"
-      className="mt-7 mx-auto"
-      onClick={() => console.log("clicked")}
-    >
+    <button type="button" id="explore-btn" className="mt-7 mx-auto">
       <Link href="/events">
         Explore Events
         <Image

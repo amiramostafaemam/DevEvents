@@ -50,12 +50,6 @@ export const compressImage = async (
               lastModified: Date.now(),
             });
 
-            console.log(
-              `✅ Image compressed: ${(file.size / 1024).toFixed(2)}KB → ${(
-                compressedFile.size / 1024
-              ).toFixed(2)}KB`
-            );
-
             resolve(compressedFile);
           },
           "image/jpeg",

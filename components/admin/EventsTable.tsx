@@ -22,7 +22,7 @@ const EventsTable = ({ events }: EventsTableProps) => {
   );
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [eventToDelete, setEventToDelete] = useState<string | null>(null);
-  const [eventToDeleteTitle, setEventToDeleteTitle] = useState<string>(""); // ✅ إضافة state للعنوان
+  const [eventToDeleteTitle, setEventToDeleteTitle] = useState<string>("");
   const [isDeleting, setIsDeleting] = useState(false);
 
   const itemsPerPage = 7;
@@ -45,9 +45,7 @@ const EventsTable = ({ events }: EventsTableProps) => {
         }
 
         setBookingCounts(counts);
-      } catch (error) {
-        console.error("Error fetching booking counts:", error);
-      }
+      } catch (error) {}
     };
 
     if (events.length > 0) {
@@ -68,7 +66,6 @@ const EventsTable = ({ events }: EventsTableProps) => {
   const endIndex = startIndex + itemsPerPage;
   const currentEvents = filteredEvents.slice(startIndex, endIndex);
 
-  // ✅ تعديل: حفظ الـ ID والـ Title
   const handleDeleteClick = (id: string, title: string) => {
     setEventToDelete(id);
     setEventToDeleteTitle(title);
@@ -118,7 +115,6 @@ const EventsTable = ({ events }: EventsTableProps) => {
         });
       }
     } catch (error) {
-      console.error("Delete error:", error);
       toast.error("Failed to delete event", {
         style: {
           background: "#DC2626",

@@ -15,7 +15,6 @@ const EditEventPage = async ({ params }: EditEventPageProps) => {
   try {
     // Validate MongoDB ObjectId format
     if (!Types.ObjectId.isValid(id)) {
-      console.error("Invalid MongoDB ID format:", id);
       return notFound();
     }
 
@@ -24,7 +23,6 @@ const EditEventPage = async ({ params }: EditEventPageProps) => {
     const event = await Event.findById(id).lean();
 
     if (!event) {
-      console.error("Event not found:", id);
       return notFound();
     }
 
@@ -36,11 +34,8 @@ const EditEventPage = async ({ params }: EditEventPageProps) => {
       updatedAt: event.updatedAt?.toISOString(),
     };
 
-    // console.log("Event loaded for editing:", eventData._id);
-
     return <EventForm event={eventData as any} />;
   } catch (error) {
-    // console.error("Error fetching event for edit:", error);
     return notFound();
   }
 };

@@ -41,8 +41,6 @@ const EventForm = ({ event }: EventFormProps) => {
   const [agenda, setAgenda] = useState<string[]>(event?.agenda || []);
   const [agendaInput, setAgendaInput] = useState("");
   const [editingIndex, setEditingIndex] = useState<number | null>(null);
-  // const [audience, setAudience] = useState<string[]>([]);
-  // const [audience, setAudience] = useState<string[]>(event?.audience || []);
   const [audience, setAudience] = useState<string[]>(
     Array.isArray(event?.audience) ? event.audience : []
   );
@@ -76,7 +74,7 @@ const EventForm = ({ event }: EventFormProps) => {
           time: event.time,
           mode: event.mode as "online" | "offline" | "hybrid",
 
-          audience: Array.isArray(event.audience) ? event.audience : [], // ✅ تأكد إنها array
+          audience: Array.isArray(event.audience) ? event.audience : [],
 
           organizer: event.organizer,
           tags: event.tags,
@@ -85,7 +83,7 @@ const EventForm = ({ event }: EventFormProps) => {
       : {
           date: "",
           time: "",
-          mode: undefined as "online" | "offline" | "hybrid" | undefined, // Fix controlled/uncontrolled warning
+          mode: undefined as "online" | "offline" | "hybrid" | undefined,
           tags: [],
           agenda: [],
           audience: [],
@@ -97,7 +95,6 @@ const EventForm = ({ event }: EventFormProps) => {
       setValue("tags", event.tags || []);
       setValue("agenda", event.agenda || []);
 
-      // ✅ تأكد إن audience هو array
       const audienceArray = Array.isArray(event.audience) ? event.audience : [];
       setValue("audience", audienceArray);
       setAudience(audienceArray);
@@ -121,13 +118,7 @@ const EventForm = ({ event }: EventFormProps) => {
     const file = e.target.files?.[0];
     if (file) {
       try {
-        console.log(`📸 Original image: ${(file.size / 1024).toFixed(2)}KB`);
-
-        // ✅ Compress image before setting
         const compressedFile = await compressImage(file, 1200, 0.8);
-        console.log(
-          `📸 Compressed image: ${(compressedFile.size / 1024).toFixed(2)}KB`
-        );
 
         setValue("image", compressedFile);
 
@@ -147,7 +138,6 @@ const EventForm = ({ event }: EventFormProps) => {
         };
         reader.readAsDataURL(compressedFile);
       } catch (error) {
-        console.error("Image compression error:", error);
         toast.error("Failed to process image", {
           style: {
             background: "#DC2626",
@@ -159,14 +149,12 @@ const EventForm = ({ event }: EventFormProps) => {
     }
   };
 
-  // ✅ Fixed: Trigger validation after adding tag
   const addTag = async () => {
     if (tagInput.trim() && !tags.includes(tagInput.trim())) {
       const newTags = [...tags, tagInput.trim()];
       setTags(newTags);
       setValue("tags", newTags);
       setTagInput("");
-      // Trigger validation to clear error
       await trigger("tags");
     }
   };
@@ -175,11 +163,9 @@ const EventForm = ({ event }: EventFormProps) => {
     const newTags = tags.filter((tag) => tag !== tagToRemove);
     setTags(newTags);
     setValue("tags", newTags);
-    // Trigger validation
     await trigger("tags");
   };
 
-  // ✅ Fixed: Trigger validation after adding agenda
   const addAgendaItem = async () => {
     if (agendaInput.trim()) {
       let updatedAgenda;
@@ -193,7 +179,6 @@ const EventForm = ({ event }: EventFormProps) => {
       setAgenda(updatedAgenda);
       setValue("agenda", updatedAgenda);
       setAgendaInput("");
-      // Trigger validation to clear error
       await trigger("agenda");
     }
   };
@@ -212,11 +197,9 @@ const EventForm = ({ event }: EventFormProps) => {
       setEditingIndex(null);
       setAgendaInput("");
     }
-    // Trigger validation
     await trigger("agenda");
   };
 
-  // ✅ Fixed: Trigger validation after adding audience
   const addAudienceItem = async () => {
     if (audienceInput.trim()) {
       let updatedAudience;
@@ -230,7 +213,6 @@ const EventForm = ({ event }: EventFormProps) => {
       setAudience(updatedAudience);
       setValue("audience", updatedAudience);
       setAudienceInput("");
-      // Trigger validation to clear error
       await trigger("audience");
     }
   };
@@ -249,11 +231,9 @@ const EventForm = ({ event }: EventFormProps) => {
       setEditingAudienceIndex(null);
       setAudienceInput("");
     }
-    // Trigger validation
     await trigger("audience");
   };
 
-  // ✅ Function to reset form completely
   const resetForm = () => {
     reset({
       title: "",
@@ -283,24 +263,7 @@ const EventForm = ({ event }: EventFormProps) => {
   const onSubmit = async (data: EventFormData) => {
     setIsSubmitting(true);
 
-    // ⏱️ Start performance monitoring
-    const startTime = performance.now();
-    console.log("⏱️ Starting event creation...");
-
     try {
-      console.log("Form submission data:", {
-        title: data.title,
-        location: data.location,
-        date: data.date,
-        time: data.time,
-        mode: data.mode,
-        tags: data.tags,
-        agenda: data.agenda,
-        audience: data.audience,
-        organizer: data.organizer,
-        hasImage: !!data.image,
-      });
-
       if (!data.tags || data.tags.length === 0) {
         toast.error("Please add at least one tag", {
           style: {
@@ -367,51 +330,26 @@ const EventForm = ({ event }: EventFormProps) => {
       const url = isEditMode ? `/api/events/${event._id}` : "/api/events";
       const method = isEditMode ? "PUT" : "POST";
 
-      console.log("→ Sending request to:", url, "Method:", method);
-
-      // ⏱️ Measure request preparation time
       const prepTime = performance.now();
-      console.log(
-        `⏱️ Request prepared in ${(prepTime - startTime).toFixed(2)}ms`
-      );
 
       const response = await fetch(url, {
         method,
         body: formData,
       });
 
-      // ⏱️ Measure API response time
       const responseTime = performance.now();
-      console.log(
-        `⏱️ API responded in ${(responseTime - prepTime).toFixed(2)}ms`
-      );
-
-      console.log("→ Response status:", response.status, response.statusText);
 
       const contentType = response.headers.get("content-type");
       if (!contentType || !contentType.includes("application/json")) {
         const text = await response.text();
-        console.error("Non-JSON response:", text);
         throw new Error("Server returned an invalid response");
       }
 
       const result = await response.json();
-      console.log("→ API Response:", result);
 
       if (!response.ok) {
-        console.error("API Error Response:", {
-          status: response.status,
-          message: result.message,
-          error: result.error,
-          errors: result.errors,
-        });
-
-        // ✅ Check for duplicate event error
-        // MongoDB duplicate key error: E11000
         const errorMessage = (result.message || "").toLowerCase();
         const errorDetail = (result.error || "").toLowerCase();
-
-        console.log("→ Checking duplicate:", { errorMessage, errorDetail });
 
         const isDuplicate =
           errorDetail.includes("e11000") ||
@@ -422,7 +360,6 @@ const EventForm = ({ event }: EventFormProps) => {
           (response.status === 500 && errorDetail.includes("duplicate"));
 
         if (isDuplicate) {
-          console.log("→ 🚨 DUPLICATE DETECTED! Showing alert");
           setDuplicateEventTitle(data.title);
           setShowDuplicateAlert(true);
           return;
@@ -461,13 +398,8 @@ const EventForm = ({ event }: EventFormProps) => {
         }
       );
 
-      // ⏱️ Total time
       const totalTime = performance.now();
-      console.log(
-        `⏱ Total operation completed in ${(totalTime - startTime).toFixed(2)}ms`
-      );
 
-      // ✅ Reset form after successful creation (not for edit mode)
       if (!isEditMode) {
         resetForm();
       }
@@ -482,11 +414,6 @@ const EventForm = ({ event }: EventFormProps) => {
         router.refresh();
       }, 1000);
     } catch (error) {
-      console.error(
-        `Error ${isEditMode ? "updating" : "creating"} event:`,
-        error
-      );
-
       let errorMessage = `Failed to ${isEditMode ? "update" : "create"} event`;
       if (error instanceof Error) {
         errorMessage = error.message;

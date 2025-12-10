@@ -133,7 +133,7 @@ const EventDetails = async ({ params }: { params: Promise<string> }) => {
             width={800}
             height={800}
             className="banner"
-            quality={85} // ✅ إضافة هذا
+            quality={85}
             priority
           />
           <section className="flex-col-gap-2">

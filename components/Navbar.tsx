@@ -17,7 +17,6 @@ const Navbar = () => {
   const [loading, setLoading] = useState(false);
 
   const handleLogoClick = () => {
-    // Clear previous timeout
     if (timeoutId) clearTimeout(timeoutId);
 
     const newCount = clickCount + 1;
@@ -61,7 +60,6 @@ const Navbar = () => {
         setError("Invalid access code");
       }
     } catch (error) {
-      console.error("Error verifying code:", error);
       setError("Something went wrong. Please try again.");
     } finally {
       setLoading(false);

@@ -32,9 +32,6 @@ const AdminEventsPage = async () => {
 
       {/* Events Table */}
       <EventsTable events={events} />
-
-      {/* Logout - Fixed position bottom right */}
-      {/* <Logout /> */}
     </div>
   );
 };

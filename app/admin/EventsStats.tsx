@@ -1,15 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Activity,
-  Calendar,
-  CalendarDays,
-  History,
-  Ticket,
-  TrendingUp,
-  Users,
-} from "lucide-react";
+import { Activity, CalendarDays, History, Ticket } from "lucide-react";
 import { IEvent } from "@/database/event.model";
 import { Spinner } from "@/components/ui/spinner";
 
@@ -35,7 +27,7 @@ export default function EventsStats({ events }: EventsStatsProps) {
           setTotalBookings(data.count || 0);
         }
       } catch (error) {
-        console.error("Error fetching bookings:", error);
+        // Silent fail - you can add error state here if needed
       } finally {
         setLoading(false);
       }

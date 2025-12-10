@@ -51,8 +51,6 @@ export async function POST(req: NextRequest) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("POST /api/bookings error:", error);
-
     return NextResponse.json(
       {
         success: false,
@@ -78,16 +76,12 @@ export async function GET(req: NextRequest) {
       query = { eventId };
     }
 
-    // ✅ استخدم countDocuments بدل من find().length
-    // ده أسرع وأدق وميحملش الـ documents كلها في الـ memory
     const count = await Booking.countDocuments(query);
 
-    // لو محتاج الـ data كمان (للـ admin panel مثلاً)
     const bookings = await Booking.find(query)
       .populate("eventId", "title slug date")
       .sort({ createdAt: -1 });
 
-    // ✅ فلتر أي bookings لـ events محذوفة
     const validBookings = bookings.filter(
       (booking) => booking.eventId !== null
     );
@@ -98,8 +92,6 @@ export async function GET(req: NextRequest) {
       data: validBookings,
     });
   } catch (error) {
-    console.error("GET /api/bookings error:", error);
-
     return NextResponse.json(
       {
         success: false,

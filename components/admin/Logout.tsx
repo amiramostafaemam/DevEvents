@@ -8,14 +8,11 @@ const Logout = () => {
 
   const handleLogout = async () => {
     try {
-      // Clear the cookie
       document.cookie = "admin_authenticated=; path=/; max-age=0";
 
       router.push("/");
       router.refresh();
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
+    } catch (error) {}
   };
 
   return (

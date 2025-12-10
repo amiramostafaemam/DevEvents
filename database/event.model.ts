@@ -135,12 +135,7 @@ EventSchema.pre(
       try {
         const { default: Booking } = await import("@/database/booking.model");
         const result = await Booking.deleteMany({ eventId });
-        console.log(
-          `Deleted ${result.deletedCount} bookings for event: ${eventId}`
-        );
-      } catch (error) {
-        console.error("Error deleting bookings:", error);
-      }
+      } catch (error) {}
     }
   }
 );
