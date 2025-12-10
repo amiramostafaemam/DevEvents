@@ -120,7 +120,7 @@
   }
 
   h1 {
-    @apply text-gradient text-6xl font-semibold max-sm:text-4xl;
+    @apply text-gradient text-6xl font-semibold py-4 max-sm:text-4xl;
   }
 
   h3 {
@@ -270,4 +270,285 @@
       }
     }
   }
+}
+
+@keyframes slide-in {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-in {
+  animation: slide-in 0.3s ease-out;
+}
+@keyframes dot-fade {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Pulse animation for the loading text */
+@keyframes text-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Slide animation for loading text */
+@keyframes text-slide {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+}
+
+.loading-text {
+  display: inline-flex;
+  align-items: center;
+  /* animation: text-pulse 2s ease-in-out infinite; */
+
+  animation: text-slide 1.5s ease-in-out infinite;
+}
+
+.animate-dots {
+  display: inline-flex;
+  margin-left: 2px;
+}
+
+.animate-dots .dot-1,
+.animate-dots .dot-2,
+.animate-dots .dot-3 {
+  display: inline-block;
+}
+
+.animate-dots .dot-1 {
+  animation: dot-fade 1.4s infinite;
+  animation-delay: 0s;
+}
+
+.animate-dots .dot-2 {
+  animation: dot-fade 1.4s infinite;
+  animation-delay: 0.2s;
+}
+
+.animate-dots .dot-3 {
+  animation: dot-fade 1.4s infinite;
+  animation-delay: 0.4s;
+}
+
+/* Add this to your globals.css or tailwind.css file */
+
+/* Animated dots for loading text */
+@keyframes dot-fade {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+/* Pulse animation for the loading text */
+@keyframes text-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* Slide animation for loading text */
+@keyframes text-slide {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(3px);
+  }
+}
+
+.loading-text {
+  display: inline-flex;
+  align-items: center;
+  animation: text-pulse 2s ease-in-out infinite;
+}
+
+.animate-dots {
+  display: inline-flex;
+  margin-left: 2px;
+}
+
+.animate-dots .dot-1,
+.animate-dots .dot-2,
+.animate-dots .dot-3 {
+  display: inline-block;
+}
+
+.animate-dots .dot-1 {
+  animation: dot-fade 1.4s infinite;
+  animation-delay: 0s;
+}
+
+.animate-dots .dot-2 {
+  animation: dot-fade 1.4s infinite;
+  animation-delay: 0.2s;
+}
+
+.animate-dots .dot-3 {
+  animation: dot-fade 1.4s infinite;
+  animation-delay: 0.4s;
+}
+
+/* ===== 404 Page Animations ===== */
+
+/* Slow pulse for 404 number */
+@keyframes pulse-slow {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.8;
+  }
+}
+
+.animate-pulse-slow {
+  animation: pulse-slow 3s ease-in-out infinite;
+}
+
+/* Floating particles */
+@keyframes float-slow {
+  0%,
+  100% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-20px) translateX(10px);
+    opacity: 0.6;
+  }
+}
+
+@keyframes float-medium {
+  0%,
+  100% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0.4;
+  }
+  50% {
+    transform: translateY(-30px) translateX(-15px);
+    opacity: 0.7;
+  }
+}
+
+@keyframes float-fast {
+  0%,
+  100% {
+    transform: translateY(0px) translateX(0px);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translateY(-40px) translateX(20px);
+    opacity: 0.8;
+  }
+}
+
+.animate-float-slow {
+  animation: float-slow 6s ease-in-out infinite;
+}
+
+.animate-float-medium {
+  animation: float-medium 4s ease-in-out infinite;
+}
+
+.animate-float-fast {
+  animation: float-fast 3s ease-in-out infinite;
+}
+
+/* Twinkle/Sparkle animations */
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes twinkle-delayed {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes twinkle-slow {
+  0%,
+  100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-twinkle {
+  animation: twinkle 2s ease-in-out infinite;
+}
+
+.animate-twinkle-delayed {
+  animation: twinkle-delayed 2s ease-in-out infinite;
+  animation-delay: 0.5s;
+}
+
+.animate-twinkle-slow {
+  animation: twinkle-slow 3s ease-in-out infinite;
+  animation-delay: 1s;
+}
+
+/* Slower pulse for orbs */
+@keyframes pulse-slower {
+  0%,
+  100% {
+    opacity: 0.1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.2;
+    transform: scale(1.1);
+  }
+}
+
+.animate-pulse-slower {
+  animation: pulse-slower 5s ease-in-out infinite;
 }

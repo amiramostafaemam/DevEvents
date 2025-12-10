@@ -1,12 +1,14 @@
-import BookEvent from "@/components/BookEvent";
 import EventCard from "@/components/EventCard";
 import { IEvent } from "@/database/event.model";
 import { getSimilarEventsBySlug } from "@/lib/actions/event.actions";
+import { getBookingCount } from "@/lib/actions/booking.actions";
 import { cacheLife } from "next/cache";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import BookingSection from "./BookingSection";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 const EventDetailItem = ({
   icon,
   alt,
@@ -43,6 +45,27 @@ const EventTags = ({ tags }: { tags: string[] }) => {
       {tags.map((tag) => (
         <div key={tag} className="pill">
           {tag}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+const EventAudience = ({ audience }: { audience: string[] | string }) => {
+  // Handle if audience is a string or array
+  const audienceArray = Array.isArray(audience)
+    ? audience
+    : typeof audience === "string"
+    ? audience.split(",").map((item) => item.trim())
+    : [];
+
+  if (audienceArray.length === 0) return null;
+
+  return (
+    <div className="flex flex-row gap-1.5 flex-wrap">
+      {audienceArray.map((aud, index) => (
+        <div key={`${aud}-${index}`} className="pill">
+          {aud}
         </div>
       ))}
     </div>
@@ -86,19 +109,20 @@ const EventDetails = async ({ params }: { params: Promise<string> }) => {
     audience,
     organizer,
     tags,
+    title,
   } = event;
 
   if (!description) return notFound();
 
-  const bookings = 10;
+  const bookings = await getBookingCount(event._id);
 
   const similarEvents: IEvent[] = await getSimilarEventsBySlug(slug);
 
   return (
     <section id="event">
       <div className="header">
-        <h1>Event Description:</h1>
-        <p>{description}</p>
+        <h1>{title}</h1>
+        <p>{overview}</p>
       </div>
       <div className="details">
         {/* left side - Event Content  */}
@@ -109,10 +133,12 @@ const EventDetails = async ({ params }: { params: Promise<string> }) => {
             width={800}
             height={800}
             className="banner"
+            quality={85} // ✅ إضافة هذا
+            priority
           />
           <section className="flex-col-gap-2">
-            <h2>Overview</h2>
-            <p>{overview}</p>
+            <h2>Description</h2>
+            <p>{description}</p>
           </section>
           <section className="flex-col-gap-2">
             <h2>Event Details</h2>
@@ -136,13 +162,15 @@ const EventDetails = async ({ params }: { params: Promise<string> }) => {
               alt="Mode Icon"
               label={mode}
             />
-            <EventDetailItem
-              icon="/icons/audience.svg"
-              alt="Audience Icon"
-              label={audience}
-            />
           </section>
+
+          <section className="flex-col-gap-2">
+            <h2>Target Audience</h2>
+            <EventAudience audience={audience} />
+          </section>
+
           <EventAgenda agenda={agenda} />
+
           <section className="flex-col-gap-2">
             <h2>About the Organizer</h2>
             <p>{organizer}</p>
@@ -150,20 +178,8 @@ const EventDetails = async ({ params }: { params: Promise<string> }) => {
 
           <EventTags tags={tags} />
         </div>
-        {/* right side - Event Content  */}
-        <aside className="booking">
-          <div className="signup-card">
-            <h2>Book Your Spot</h2>
-            {bookings > 0 ? (
-              <p className="text-sm">
-                Join {bookings} people who have already booked their spot
-              </p>
-            ) : (
-              <p className="text-sm">Be the first to book your spot!</p>
-            )}
-            <BookEvent eventId={event._id} slug={event.slug} />
-          </div>
-        </aside>
+
+        <BookingSection eventId={event._id} initialBookingCount={bookings} />
       </div>
       <div className="flex w-full flex-col gap-4 pt-20">
         <h2>Similar Events</h2>
