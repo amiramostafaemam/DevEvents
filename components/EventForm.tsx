@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { eventFormSchema, EventFormData } from "@/lib/validation";
 import { useRouter, usePathname } from "next/navigation";
 import Image from "next/image";
-import { IEvent } from "@/database/event.model";
+import { IEventSerialized } from "@/database/event.model";
 import { Calendar28 } from "@/components/DatePicker";
 import { TimePicker } from "@/components/TimePicker";
 import { toast } from "sonner";
@@ -24,9 +24,8 @@ import {
 import { compressImage } from "@/lib/imageCompression";
 
 interface EventFormProps {
-  event?: IEvent;
+  event?: IEventSerialized;
 }
-
 const EventForm = ({ event }: EventFormProps) => {
   const router = useRouter();
   const pathname = usePathname();

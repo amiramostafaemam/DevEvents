@@ -1,4 +1,4 @@
-import { Schema, model, models, Document, Query } from "mongoose";
+import { Schema, model, models, Document, Query, Types } from "mongoose";
 
 export interface IEvent extends Document {
   title: string;
@@ -16,6 +16,26 @@ export interface IEvent extends Document {
   tags: string[];
   createdAt: Date;
   updatedAt: Date;
+}
+
+// Interface for serialized data (with string _id for client components)
+export interface IEventSerialized {
+  _id: string;
+  title: string;
+  slug: string;
+  description: string;
+  overview: string;
+  image: string;
+  location: string;
+  date: string;
+  time: string;
+  mode: string;
+  audience: string[];
+  agenda: string[];
+  organizer: string;
+  tags: string[];
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 const EventSchema = new Schema<IEvent>(
@@ -128,14 +148,16 @@ EventSchema.pre(
   "findOneAndDelete",
   { document: false, query: true },
   async function (this: Query<IEvent, IEvent>) {
-    const query = this.getQuery();
-    const eventId = query._id;
+    const filter = this.getFilter() as { _id?: Types.ObjectId };
+    const eventId = filter._id;
 
     if (eventId) {
       try {
         const { default: Booking } = await import("@/database/booking.model");
-        const result = await Booking.deleteMany({ eventId });
-      } catch (error) {}
+        await Booking.deleteMany({ eventId });
+      } catch (error) {
+        console.error("Error deleting bookings:", error);
+      }
     }
   }
 );
