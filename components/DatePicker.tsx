@@ -47,22 +47,40 @@ export function Calendar28({
   error,
 }: DatePickerProps) {
   const [open, setOpen] = React.useState(false);
-  const [date, setDate] = React.useState<Date | undefined>(
-    value ? new Date(value) : undefined
-  );
-  const [month, setMonth] = React.useState<Date>(
-    value ? new Date(value) : new Date()
-  );
-  const [inputValue, setInputValue] = React.useState(
-    value ? formatDate(new Date(value)) : ""
-  );
+
+  // Fix: Use function initializer and validate before creating Date
+  const [date, setDate] = React.useState<Date | undefined>(() => {
+    if (value && value.trim() !== "") {
+      const newDate = new Date(value);
+      return isValidDate(newDate) ? newDate : undefined;
+    }
+    return undefined;
+  });
+
+  const [month, setMonth] = React.useState<Date>(() => {
+    if (value && value.trim() !== "") {
+      const newDate = new Date(value);
+      return isValidDate(newDate) ? newDate : new Date();
+    }
+    return new Date();
+  });
+
+  const [inputValue, setInputValue] = React.useState(() => {
+    if (value && value.trim() !== "") {
+      const newDate = new Date(value);
+      return isValidDate(newDate) ? formatDate(newDate) : "";
+    }
+    return "";
+  });
 
   React.useEffect(() => {
-    if (value) {
+    if (value && value.trim() !== "") {
       const newDate = new Date(value);
-      setDate(newDate);
-      setInputValue(formatDate(newDate));
-      setMonth(newDate);
+      if (isValidDate(newDate)) {
+        setDate(newDate);
+        setInputValue(formatDate(newDate));
+        setMonth(newDate);
+      }
     } else {
       setDate(undefined);
       setInputValue("");
@@ -74,7 +92,7 @@ export function Calendar28({
     setInputValue(formatDate(newDate));
     setOpen(false);
 
-    if (newDate) {
+    if (newDate && isValidDate(newDate)) {
       const year = newDate.getFullYear();
       const month = String(newDate.getMonth() + 1).padStart(2, "0");
       const day = String(newDate.getDate()).padStart(2, "0");
