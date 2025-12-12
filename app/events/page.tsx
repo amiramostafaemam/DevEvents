@@ -1,6 +1,8 @@
+// app/events/page.tsx
 import EventCard from "@/components/EventCard";
 import { IEvent } from "@/database/event.model";
 import { cacheLife } from "next/cache";
+import { Suspense } from "react";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const Page = async () => {
@@ -17,8 +19,14 @@ const Page = async () => {
           {events &&
             events.length > 0 &&
             events.map((event: IEvent) => (
-              <li key={event.title} className="list-none">
-                <EventCard {...event} />
+              <li key={event.title} className="list-none capitalize">
+                <Suspense
+                  fallback={
+                    <div className="h-[300px] w-full bg-slate-800 animate-pulse rounded-lg" />
+                  }
+                >
+                  <EventCard {...event} />
+                </Suspense>
               </li>
             ))}
         </ul>

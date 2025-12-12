@@ -151,6 +151,7 @@ export function Calendar28({
             <CalendarIcon className="size-[18px] pointer-events-none mt-2 absolute left-3" />
             <Input
               id="date"
+              value=""
               placeholder={placeholder}
               className="placeholder:text-[#DCFFF8] border-none pl-10 placeholder:text-base"
               disabled

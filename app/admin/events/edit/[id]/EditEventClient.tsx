@@ -1,3 +1,4 @@
+// app/admin/events/edit/[id]/EditEventClient.tsx
 "use client";
 
 import EventForm from "@/components/EventForm";

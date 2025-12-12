@@ -1,3 +1,4 @@
+// components/EventCard.tsx
 import Image from "next/image";
 import Link from "next/link";
 
@@ -20,7 +21,20 @@ const EventCard = ({
   time,
   updatedAt,
 }: Props) => {
-  const cacheKey = updatedAt ? new Date(updatedAt).getTime() : "";
+  // Safely handle date parsing to avoid Suspense boundary issues
+  let cacheKey = "";
+  if (updatedAt) {
+    try {
+      const dateObj =
+        typeof updatedAt === "string" ? new Date(updatedAt) : updatedAt;
+      if (!isNaN(dateObj.getTime())) {
+        cacheKey = dateObj.getTime().toString();
+      }
+    } catch (e) {
+      // Silently fail if date parsing fails
+      cacheKey = "";
+    }
+  }
   const imageUrl = cacheKey ? `${image}?v=${cacheKey}` : image;
 
   return (
@@ -38,7 +52,7 @@ const EventCard = ({
         <Image src="/icons/pin.svg" alt="Location" width={14} height={14} />
         <p>{location}</p>
       </div>
-      <p className="title">{title}</p>
+      <p className="title capitalize">{title}</p>
       <div className="datetime">
         <div>
           <Image src="/icons/calendar.svg" alt="Date" width={14} height={14} />

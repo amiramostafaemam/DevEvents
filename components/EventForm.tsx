@@ -1,3 +1,4 @@
+// components/EventForm.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -23,10 +24,21 @@ import {
 } from "@/components/ui/alert-dialog";
 import { compressImage } from "@/lib/imageCompression";
 
+const generateSlug = (title: string): string => {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+};
+
 interface EventFormProps {
   event?: IEventSerialized;
+  createdBy?: "user" | "admin";
 }
-const EventForm = ({ event }: EventFormProps) => {
+const EventForm = ({ event, createdBy = "user" }: EventFormProps) => {
   const router = useRouter();
   const pathname = usePathname();
 
@@ -301,6 +313,10 @@ const EventForm = ({ event }: EventFormProps) => {
 
       const formData = new FormData();
       formData.append("title", data.title);
+      if (!isEditMode) {
+        const slug = generateSlug(data.title);
+        formData.append("slug", slug);
+      }
       formData.append("description", data.description);
       formData.append("overview", data.overview);
       formData.append("location", data.location);
@@ -311,6 +327,11 @@ const EventForm = ({ event }: EventFormProps) => {
       formData.append("organizer", data.organizer);
       formData.append("tags", JSON.stringify(data.tags));
       formData.append("agenda", JSON.stringify(data.agenda));
+
+      // Add createdBy only when creating (not editing)
+      if (!isEditMode) {
+        formData.append("createdBy", createdBy);
+      }
 
       if (data.image) {
         formData.append("image", data.image);
@@ -382,20 +403,36 @@ const EventForm = ({ event }: EventFormProps) => {
         throw new Error(finalErrorMessage);
       }
 
-      toast.success(
-        `Event ${isEditMode ? "updated" : "created"} successfully!`,
-        {
-          style: {
-            background: "#59DECA",
-            color: "#030708",
-            border: "transparent",
-            borderRadius: "12px",
-            fontSize: "16px",
-            fontWeight: "semibold",
-            padding: "12px 16px",
-          },
-        }
-      );
+      // Determine success message based on who created the event
+      let successMessage = `Event ${
+        isEditMode ? "updated" : "created"
+      } successfully!`;
+
+      // If it's a user (not admin) creating a new event, show approval message
+      if (
+        !isEditMode &&
+        createdBy === "user" &&
+        result.message?.includes("submitted for approval")
+      ) {
+        successMessage =
+          "Event created successfully! Your event is waiting for admin approval.";
+      } else if (!isEditMode && createdBy === "user") {
+        // Fallback in case API message format changes
+        successMessage =
+          "Event created successfully! Your event is waiting for admin approval.";
+      }
+
+      toast.success(successMessage, {
+        style: {
+          background: "#59DECA",
+          color: "#030708",
+          border: "transparent",
+          borderRadius: "12px",
+          fontSize: "16px",
+          fontWeight: "semibold",
+          padding: "12px 16px",
+        },
+      });
 
       const totalTime = performance.now();
 

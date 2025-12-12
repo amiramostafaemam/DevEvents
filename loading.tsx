@@ -2,7 +2,7 @@
 
 import { Home, Settings, UserStar } from "lucide-react";
 
-export default function AdminLoading() {
+export default function Loading() {
   return (
     <div className="bg-transparent">
       <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-center">

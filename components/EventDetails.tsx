@@ -1,13 +1,14 @@
+// components/EventDetails.tsx
 import EventCard from "@/components/EventCard";
 import { IEvent } from "@/database/event.model";
-import { getSimilarEventsBySlug } from "@/lib/actions/event.actions";
+import {
+  getEventBySlug,
+  getSimilarEventsBySlug,
+} from "@/lib/actions/event.actions";
 import { getBookingCount } from "@/lib/actions/booking.actions";
-import { cacheLife } from "next/cache";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import BookingSection from "./BookingSection";
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const EventDetailItem = ({
   icon,
@@ -52,7 +53,6 @@ const EventTags = ({ tags }: { tags: string[] }) => {
 };
 
 const EventAudience = ({ audience }: { audience: string[] | string }) => {
-  // Handle if audience is a string or array
   const audienceArray = Array.isArray(audience)
     ? audience
     : typeof audience === "string"
@@ -71,31 +71,19 @@ const EventAudience = ({ audience }: { audience: string[] | string }) => {
     </div>
   );
 };
+
 const EventDetails = async ({ params }: { params: Promise<string> }) => {
-  "use cache";
-  cacheLife("hours");
   const slug = await params;
-  let event;
-  try {
-    const request = await fetch(`${BASE_URL}/api/events/${slug}`, {
-      next: { revalidate: 60 },
-    });
-    if (!request.ok) {
-      if (request.status === 404) {
-        return notFound();
-      }
-      throw new Error(`Failed to fetch event :${request.statusText}`);
-    }
 
-    const response = await request.json();
-    event = response.event;
+  // Directly query database using server action (more efficient than API call)
+  const result = await getEventBySlug(slug);
 
-    if (!event) {
-      return notFound();
-    }
-  } catch (error) {
+  if (!result || !result.event) {
     return notFound();
   }
+
+  const event = result.event;
+  const isPending = result.isPending;
 
   const {
     description,
@@ -114,18 +102,29 @@ const EventDetails = async ({ params }: { params: Promise<string> }) => {
 
   if (!description) return notFound();
 
-  const bookings = await getBookingCount(event._id);
+  // Only get booking count for approved events (not pending)
+  const bookings = isPending ? 0 : await getBookingCount(String(event._id));
 
+  // Always fetch similar events (works for both approved and pending events)
+  // Similar events will only include approved events from Event collection
   const similarEvents: IEvent[] = await getSimilarEventsBySlug(slug);
 
   return (
     <section id="event">
+      {isPending && (
+        <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-6">
+          <p className="text-yellow-400 text-center font-medium">
+            ⏳ This event is pending approval
+          </p>
+        </div>
+      )}
+
       <div className="header">
-        <h1>{title}</h1>
+        <h1 className="capitalize">{title}</h1>
         <p>{overview}</p>
       </div>
       <div className="details">
-        {/* left side - Event Content  */}
+        {/* left side - Event Content */}
         <div className="content">
           <Image
             src={image}
@@ -179,20 +178,29 @@ const EventDetails = async ({ params }: { params: Promise<string> }) => {
           <EventTags tags={tags} />
         </div>
 
-        <BookingSection eventId={event._id} initialBookingCount={bookings} />
+        {/* Only show BookingSection if NOT pending */}
+        {!isPending && (
+          <BookingSection
+            eventId={String(event._id)}
+            initialBookingCount={bookings}
+          />
+        )}
       </div>
-      <div className="flex w-full flex-col gap-4 pt-20">
-        <h2>Similar Events</h2>
-        <div className="events">
-          {similarEvents.length > 0 &&
-            similarEvents.map((similarEvent: IEvent) => (
+
+      {/* Show similar events for all events (approved and pending) */}
+      {similarEvents.length > 0 && (
+        <div className="flex w-full flex-col gap-4 pt-20">
+          <h2>Similar Events</h2>
+          <div className="events">
+            {similarEvents.map((similarEvent: IEvent) => (
               <EventCard
                 key={similarEvent.title.toString()}
                 {...similarEvent}
               />
             ))}
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 };

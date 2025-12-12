@@ -1,3 +1,4 @@
+// components/admin/EventsTable.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -45,7 +46,9 @@ const EventsTable = ({ events }: EventsTableProps) => {
         }
 
         setBookingCounts(counts);
-      } catch (error) {}
+      } catch (error) {
+        // Silent fail
+      }
     };
 
     if (events.length > 0) {
@@ -53,7 +56,7 @@ const EventsTable = ({ events }: EventsTableProps) => {
     }
   }, [events]);
 
-  // Filter events
+  // Filter events (only approved events from Event collection)
   const filteredEvents = events.filter(
     (event) =>
       event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -136,6 +139,9 @@ const EventsTable = ({ events }: EventsTableProps) => {
       <div className="bg-[#0D161A] rounded-xl border border-[#0D161A] overflow-hidden">
         {/* Search Bar */}
         <div className="p-6 border-b border-[#243B47] bg-[#0D161A]">
+          <h2 className="text-xl font-semibold text-[#E7F2FF] mb-2">
+            Approved Events ({filteredEvents.length})
+          </h2>
           <input
             type="text"
             placeholder="Search events by name or location..."
@@ -189,7 +195,9 @@ const EventsTable = ({ events }: EventsTableProps) => {
                         className="rounded-lg object-cover"
                       />
                       <div>
-                        <p className="font-semibold">{event.title}</p>
+                        <p className="font-semibold capitalize">
+                          {event.title}
+                        </p>
                       </div>
                     </div>
                   </td>

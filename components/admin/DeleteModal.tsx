@@ -1,3 +1,4 @@
+// components/admin/DeleteModal.tsx
 "use client";
 
 import { X, AlertTriangle } from "lucide-react";

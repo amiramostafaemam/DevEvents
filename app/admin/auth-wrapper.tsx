@@ -1,3 +1,4 @@
+// app/admin/auth-wrapper.tsx
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 

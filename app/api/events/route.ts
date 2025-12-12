@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { v2 as cloudinary } from "cloudinary";
 import connectDB from "@/lib/mongodb";
 import Event from "@/database/event.model";
+import PendingEvent from "@/database/pending-event.model";
 import { revalidatePath } from "next/cache";
 
 cloudinary.config({
@@ -74,6 +75,10 @@ export async function POST(req: NextRequest) {
           .end(buffer);
       }
     );
+
+    // Determine where to save based on createdBy
+    const createdBy = formData.get("createdBy") as string;
+    const isAdmin = createdBy === "admin";
 
     const eventData: EventDataInput = {
       title: formData.get("title") as string,
@@ -160,7 +165,18 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const createdEvent = await Event.create(eventData);
+    // Save to appropriate collection
+    let createdEvent;
+    if (isAdmin) {
+      // Admin creates event → Save to Event collection (approved)
+      createdEvent = await Event.create(eventData);
+    } else {
+      // User creates event → Save to PendingEvent collection
+      createdEvent = await PendingEvent.create({
+        ...eventData,
+        submittedBy: "user",
+      });
+    }
 
     revalidatePath("/");
     revalidatePath("/events");
@@ -169,7 +185,9 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(
       {
         success: true,
-        message: "Event created successfully",
+        message: isAdmin
+          ? "Event created successfully"
+          : "Event submitted for approval",
         data: createdEvent,
       },
       { status: 201 }
@@ -214,6 +232,7 @@ export async function GET(req: NextRequest) {
     const slug = searchParams.get("slug");
 
     if (slug) {
+      // Only return from Event collection (approved events)
       const event = await Event.findOne({ slug });
 
       if (!event) {
@@ -226,12 +245,14 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ success: true, event });
     }
 
+    // Get all approved events from Event collection only
     const events = await Event.find({}).sort({ createdAt: -1 });
 
     return NextResponse.json({
       success: true,
       count: events.length,
       data: events,
+      events, // Keep for backward compatibility
     });
   } catch (error: unknown) {
     return NextResponse.json(

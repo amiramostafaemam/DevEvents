@@ -1,13 +1,33 @@
-// app/admin/events/page.tsx
+// app/admin/page.tsx
 import Link from "next/link";
 import EventsTable from "@/components/admin/EventsTable";
+import PendingEvents from "@/components/admin/PendingEvents";
 import { getAllEvents } from "@/lib/actions/event.actions";
 import EventsStats from "./EventsStats";
 import { cookies } from "next/headers";
+import { Suspense } from "react";
+import connectDB from "@/lib/mongodb";
+import PendingEvent from "@/database/pending-event.model";
 
 const AdminEventsPage = async () => {
   await cookies();
+
+  // Get approved events from Event collection
   const events = await getAllEvents();
+
+  // Get pending events from PendingEvent collection
+  await connectDB();
+  const pendingEventsData = await PendingEvent.find({})
+    .sort({ createdAt: -1 })
+    .lean();
+
+  // Serialize pending events
+  const pendingEvents = pendingEventsData.map((event) => ({
+    ...event,
+    _id: event._id.toString(),
+    createdAt: event.createdAt?.toISOString(),
+    updatedAt: event.updatedAt?.toISOString(),
+  }));
 
   return (
     <div className="space-y-6">
@@ -30,8 +50,19 @@ const AdminEventsPage = async () => {
       {/* Stats */}
       <EventsStats events={events} />
 
+      {/* Pending Events Section */}
+      {pendingEvents.length > 0 && (
+        <div>
+          <PendingEvents initialEvents={pendingEvents as any} />
+        </div>
+      )}
+
       {/* Events Table */}
-      <EventsTable events={events} />
+      <Suspense
+        fallback={<div className="text-slate-400">Loading events...</div>}
+      >
+        <EventsTable events={events} />
+      </Suspense>
     </div>
   );
 };

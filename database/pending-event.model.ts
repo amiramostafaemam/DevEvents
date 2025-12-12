@@ -1,7 +1,7 @@
-// database/event.model.ts
-import { Schema, model, models, Document, Query, Types } from "mongoose";
+// database/pending-event.model.ts
+import { Schema, model, models, Document } from "mongoose";
 
-export interface IEvent extends Document {
+export interface IPendingEvent extends Document {
   title: string;
   slug: string;
   description: string;
@@ -17,10 +17,11 @@ export interface IEvent extends Document {
   tags: string[];
   createdAt: Date;
   updatedAt: Date;
+  submittedBy: string;
 }
 
-// Interface for serialized data (with string _id for client components)
-export interface IEventSerialized {
+// Interface for serialized data
+export interface IPendingEventSerialized {
   _id: string;
   title: string;
   slug: string;
@@ -37,9 +38,10 @@ export interface IEventSerialized {
   tags: string[];
   createdAt?: string;
   updatedAt?: string;
+  submittedBy?: string;
 }
 
-const EventSchema = new Schema<IEvent>(
+const PendingEventSchema = new Schema<IPendingEvent>(
   {
     title: {
       type: String,
@@ -119,6 +121,10 @@ const EventSchema = new Schema<IEvent>(
         message: "At least one tag is required",
       },
     },
+    submittedBy: {
+      type: String,
+      default: "user",
+    },
   },
   {
     timestamps: true,
@@ -126,7 +132,7 @@ const EventSchema = new Schema<IEvent>(
 );
 
 // Pre-save hook for slug generation
-EventSchema.pre("save", function () {
+PendingEventSchema.pre("save", function () {
   if (this.isModified("title") || this.isNew) {
     this.slug = generateSlug(this.title);
   }
@@ -143,25 +149,6 @@ EventSchema.pre("save", function () {
     this.time = normalizeTime(this.time);
   }
 });
-
-// Cascade delete bookings when event is deleted
-EventSchema.pre(
-  "findOneAndDelete",
-  { document: false, query: true },
-  async function (this: Query<IEvent, IEvent>) {
-    const filter = this.getFilter() as { _id?: Types.ObjectId };
-    const eventId = filter._id;
-
-    if (eventId) {
-      try {
-        const { default: Booking } = await import("@/database/booking.model");
-        await Booking.deleteMany({ eventId });
-      } catch (error) {
-        console.error("Error deleting bookings:", error);
-      }
-    }
-  }
-);
 
 function generateSlug(title: string): string {
   return title
@@ -210,9 +197,11 @@ function normalizeTime(timeString: string): string {
   return `${hours.toString().padStart(2, "0")}:${minutes}`;
 }
 
-EventSchema.index({ slug: 1 }, { unique: true });
-EventSchema.index({ date: 1, mode: 1 });
+PendingEventSchema.index({ slug: 1 });
+PendingEventSchema.index({ createdAt: -1 });
 
-const Event = models.Event || model<IEvent>("Event", EventSchema);
+const PendingEvent =
+  models.PendingEvent ||
+  model<IPendingEvent>("PendingEvent", PendingEventSchema);
 
-export default Event;
+export default PendingEvent;

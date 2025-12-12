@@ -1,4 +1,4 @@
-// //app/api/events/[id]/route.ts
+//app/api/events/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongodb";
 import Event from "@/database/event.model";
