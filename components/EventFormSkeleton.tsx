@@ -3,7 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const EventFormSkeleton = () => {
   return (
-    <div className="w-full max-w-3xl mx-auto">
+    <div className="w-full max-w-3xl mx-auto animate-pulse">
       {/* Title Skeleton */}
       <Skeleton className="h-12 w-64 mx-auto mb-8 bg-[#182830]" />
 

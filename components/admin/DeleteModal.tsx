@@ -9,7 +9,7 @@ interface DeleteModalProps {
   onClose: () => void;
   onConfirm: () => void;
   title: string;
-  message: string;
+  message: React.ReactNode;
   isDeleting?: boolean;
 }
 
@@ -47,7 +47,7 @@ const DeleteModal = ({
         </div>
 
         {/* Content */}
-        <h3 className="text-xl font-bold mb-2">{title}</h3>
+        <h3 className="text-xl font-bold mb-2 capitalize">{title}</h3>
         <p className="text-slate-400 mb-6">{message}</p>
 
         {/* Actions */}

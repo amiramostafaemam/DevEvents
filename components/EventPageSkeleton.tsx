@@ -1,6 +1,6 @@
 const EventPageSkeleton = () => {
   return (
-    <section className="space-y-10">
+    <section className="space-y-10 animate-pulse">
       {/* Hero Image */}
       <div className="relative w-full h-80 bg-dark-200/50 rounded-xl overflow-hidden">
         <div

@@ -482,7 +482,7 @@ const EventForm = ({ event, createdBy = "user" }: EventFormProps) => {
           <AlertDialogHeader>
             <AlertDialogDescription className="text-[#DCFFF8] text-base">
               Event with the title{" "}
-              <span className="font-semibold text-xl text-red-600">
+              <span className="font-semibold text-xl text-red-600 capitalize">
                 {duplicateEventTitle}
               </span>{" "}
               already exists. Please use a different title for your event.
@@ -768,7 +768,7 @@ const EventForm = ({ event, createdBy = "user" }: EventFormProps) => {
                   e.key === "Enter" && (e.preventDefault(), addAudienceItem())
                 }
                 placeholder="e.g., Developers, Designers, Students"
-                className="bg-[#182830] border-[#243B47] text-[#DCFFF8] py-3 w-full px-4 rounded-xl text-base placeholder:text-[#DCFFF8] placeholder:text-base focus:border-[#DCFFF8] focus:outline-1"
+                className="bg-[#182830] border-[#243B47] text-[#DCFFF8] py-3 w-full px-4 rounded-xl text-base placeholder:text-[#DCFFF8] placeholder:text-base focus:border-[#DCFFF8] focus:outline-1 "
               />
               <button
                 type="button"

@@ -86,17 +86,23 @@ const EventsTable = ({ events }: EventsTableProps) => {
       });
 
       if (response.ok) {
-        toast.success(`${eventToDeleteTitle} event deleted successfully`, {
-          style: {
-            background: "#59DECA",
-            color: "#030708",
-            border: "transparent",
-            borderRadius: "12px",
-            fontSize: "16px",
-            fontWeight: "semibold",
-            padding: "12px 16px",
-          },
-        });
+        toast.success(
+          `${
+            eventToDeleteTitle.charAt(0).toUpperCase() +
+            eventToDeleteTitle.slice(1)
+          } event deleted successfully`,
+          {
+            style: {
+              background: "#59DECA",
+              color: "#030708",
+              border: "transparent",
+              borderRadius: "12px",
+              fontSize: "16px",
+              fontWeight: "semibold",
+              padding: "12px 16px",
+            },
+          }
+        );
         setDeleteModalOpen(false);
 
         // Reload page to refresh all counts
@@ -213,9 +219,9 @@ const EventsTable = ({ events }: EventsTableProps) => {
                   <td className="px-6 py-4">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
-                        event.mode === "online"
+                        event.mode === "offline"
                           ? "bg-blue-500/10 text-blue-400"
-                          : event.mode === "offline"
+                          : event.mode === "online"
                           ? "bg-green-500/10 text-green-400"
                           : "bg-purple-500/10 text-purple-400"
                       }`}
@@ -303,7 +309,18 @@ const EventsTable = ({ events }: EventsTableProps) => {
         onClose={() => setDeleteModalOpen(false)}
         onConfirm={handleDeleteConfirm}
         title="Delete Event"
-        message={`Are you sure you want to delete ${eventToDeleteTitle} event? This action cannot be undone.`}
+        message={
+          <>
+            Are you sure you want to delete{" "}
+            <span className="text-red-600 font-medium text-lg">
+              {eventToDeleteTitle
+                .split(" ")
+                .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+                .join(" ")}
+            </span>{" "}
+            event? This action cannot be undone.
+          </>
+        }
         isDeleting={isDeleting}
       />
     </>

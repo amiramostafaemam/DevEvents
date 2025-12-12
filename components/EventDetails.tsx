@@ -9,6 +9,22 @@ import { getBookingCount } from "@/lib/actions/booking.actions";
 import Image from "next/image";
 import { notFound } from "next/navigation";
 import BookingSection from "./BookingSection";
+import { Hourglass } from "lucide-react";
+
+const toTitleCase = (str: string): string => {
+  if (!str || str.trim() === "") return "";
+  return str
+    .trim()
+    .toLowerCase()
+    .split(" ")
+    .map((word) => (word ? word.charAt(0).toUpperCase() + word.slice(1) : ""))
+    .join(" ");
+};
+
+const capitalize = (str: string): string => {
+  if (!str || str.trim() === "") return "";
+  return str.trim().charAt(0).toUpperCase() + str.trim().slice(1).toLowerCase();
+};
 
 const EventDetailItem = ({
   icon,
@@ -22,18 +38,20 @@ const EventDetailItem = ({
   return (
     <div className="flex-row-gap-2 items-center">
       <Image src={icon} alt={alt} width={17} height={17} />
-      <p>{label}</p>
+      <p>{toTitleCase(label)}</p>
     </div>
   );
 };
 
 const EventAgenda = ({ agenda }: { agenda: string[] }) => {
+  if (!agenda || agenda.length === 0) return null;
+
   return (
     <div className="agenda">
       <h2>Agenda</h2>
       <ul>
-        {agenda.map((item) => (
-          <li key={item}>{item}</li>
+        {agenda.map((item, index) => (
+          <li key={`${item}-${index}`}>{capitalize(item)}</li>
         ))}
       </ul>
     </div>
@@ -41,11 +59,13 @@ const EventAgenda = ({ agenda }: { agenda: string[] }) => {
 };
 
 const EventTags = ({ tags }: { tags: string[] }) => {
+  if (!tags || tags.length === 0) return null;
+
   return (
     <div className="flex flex-row gap-1.5 flex-wrap">
-      {tags.map((tag) => (
-        <div key={tag} className="pill">
-          {tag}
+      {tags.map((tag, index) => (
+        <div key={`${tag}-${index}`} className="pill">
+          {toTitleCase(tag)}
         </div>
       ))}
     </div>
@@ -65,7 +85,7 @@ const EventAudience = ({ audience }: { audience: string[] | string }) => {
     <div className="flex flex-row gap-1.5 flex-wrap">
       {audienceArray.map((aud, index) => (
         <div key={`${aud}-${index}`} className="pill">
-          {aud}
+          {toTitleCase(aud)}
         </div>
       ))}
     </div>
@@ -75,7 +95,6 @@ const EventAudience = ({ audience }: { audience: string[] | string }) => {
 const EventDetails = async ({ params }: { params: Promise<string> }) => {
   const slug = await params;
 
-  // Directly query database using server action (more efficient than API call)
   const result = await getEventBySlug(slug);
 
   if (!result || !result.event) {
@@ -102,26 +121,25 @@ const EventDetails = async ({ params }: { params: Promise<string> }) => {
 
   if (!description) return notFound();
 
-  // Only get booking count for approved events (not pending)
   const bookings = isPending ? 0 : await getBookingCount(String(event._id));
 
-  // Always fetch similar events (works for both approved and pending events)
-  // Similar events will only include approved events from Event collection
   const similarEvents: IEvent[] = await getSimilarEventsBySlug(slug);
 
   return (
     <section id="event">
       {isPending && (
-        <div className=" rounded-lg mb-3">
-          <p className="text-yellow-400 text-center font-medium">
-            ⏳ This event is pending approval
+        <div className="bg-transparent border-transparent rounded-xl py-3 px-2 mb-3 flex items-center justify-center gap-2 animate-pulse mx-auto w-1/2">
+          <Hourglass size={25} className="text-amber-200" />
+
+          <p className="font-bold tracking-wide text-3xl text-amber-200">
+            This event is pending approval
           </p>
         </div>
       )}
 
       <div className="header">
-        <h1 className="capitalize">{title}</h1>
-        <p>{overview}</p>
+        <h1>{toTitleCase(title)}</h1>
+        <p>{toTitleCase(overview)}</p>
       </div>
       <div className="details">
         {/* left side - Event Content */}
@@ -137,7 +155,7 @@ const EventDetails = async ({ params }: { params: Promise<string> }) => {
           />
           <section className="flex-col-gap-2">
             <h2>Description</h2>
-            <p>{description}</p>
+            <p>{toTitleCase(description)}</p>
           </section>
           <section className="flex-col-gap-2">
             <h2>Event Details</h2>
@@ -172,7 +190,7 @@ const EventDetails = async ({ params }: { params: Promise<string> }) => {
 
           <section className="flex-col-gap-2">
             <h2>About the Organizer</h2>
-            <p>{organizer}</p>
+            <p>{capitalize(organizer)}</p>
           </section>
 
           <EventTags tags={tags} />

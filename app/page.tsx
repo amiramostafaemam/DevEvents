@@ -27,7 +27,7 @@ const Home = async () => {
           {events &&
             events.length > 0 &&
             events.map((event: IEvent) => (
-              <li key={event.title} className="list-none">
+              <li key={event.title} className="list-none capitalize">
                 <Suspense
                   fallback={
                     <div className="h-[300px] w-full bg-slate-800 animate-pulse rounded-lg" />

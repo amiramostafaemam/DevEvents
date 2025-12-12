@@ -1,6 +1,7 @@
 // app/events/page.tsx
 import EventCard from "@/components/EventCard";
 import { IEvent } from "@/database/event.model";
+import Loading from "@/loading";
 import { cacheLife } from "next/cache";
 import { Suspense } from "react";
 
@@ -20,11 +21,7 @@ const Page = async () => {
             events.length > 0 &&
             events.map((event: IEvent) => (
               <li key={event.title} className="list-none capitalize">
-                <Suspense
-                  fallback={
-                    <div className="h-[300px] w-full bg-slate-800 animate-pulse rounded-lg" />
-                  }
-                >
+                <Suspense fallback={<Loading />}>
                   <EventCard {...event} />
                 </Suspense>
               </li>
