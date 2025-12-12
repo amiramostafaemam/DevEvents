@@ -1,11 +1,13 @@
 //app/events/create/page.tsx
 "use client";
 import EventForm from "@/components/EventForm";
+import EventFormSkeleton from "@/components/EventFormSkeleton";
+import Loading from "@/loading";
 import { Suspense } from "react";
 
 const CreateEventPage = () => {
   return (
-    <Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+    <Suspense fallback={<EventFormSkeleton />}>
       <EventForm createdBy="user" />
     </Suspense>
   );

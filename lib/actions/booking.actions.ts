@@ -2,6 +2,7 @@
 
 import Booking from "@/database/booking.model";
 import connectDB from "@/lib/mongodb";
+import { unstable_noStore } from "next/cache";
 
 export async function getBookingsCount(eventId: string): Promise<number> {
   try {
@@ -54,6 +55,7 @@ export async function deleteEventBookings(eventId: string): Promise<number> {
 }
 
 export const getBookingCount = async (eventId: string): Promise<number> => {
+  unstable_noStore();
   try {
     await connectDB();
 

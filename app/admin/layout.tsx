@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import { AuthWrapper } from "./auth-wrapper";
 import Logout from "@/components/admin/Logout";
+import Loading from "@/loading";
+import EventFormSkeleton from "@/components/EventFormSkeleton";
 
 export default function AdminLayout({
   children,
@@ -9,13 +11,7 @@ export default function AdminLayout({
 }) {
   return (
     <div className="flex min-h-screen bg-transparent">
-      <Suspense
-        fallback={
-          <div className="flex-1 p-8 flex items-center justify-center">
-            <div className="text-lg">Loading...</div>
-          </div>
-        }
-      >
+      <Suspense fallback={<EventFormSkeleton />}>
         <AuthWrapper>
           <main className="flex-1 p-8">{children}</main>
         </AuthWrapper>
