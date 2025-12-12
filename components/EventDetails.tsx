@@ -112,7 +112,7 @@ const EventDetails = async ({ params }: { params: Promise<string> }) => {
   return (
     <section id="event">
       {isPending && (
-        <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-4 mb-6">
+        <div className=" rounded-lg mb-3">
           <p className="text-yellow-400 text-center font-medium">
             ⏳ This event is pending approval
           </p>

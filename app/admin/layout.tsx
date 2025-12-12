@@ -1,7 +1,7 @@
+// app/admin/layout.tsx
 import { Suspense } from "react";
 import { AuthWrapper } from "./auth-wrapper";
 import Logout from "@/components/admin/Logout";
-import Loading from "@/loading";
 import EventFormSkeleton from "@/components/EventFormSkeleton";
 
 export default function AdminLayout({
