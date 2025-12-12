@@ -58,20 +58,24 @@ const PendingEvents = ({ initialEvents }: PendingEventsProps) => {
           window.location.reload();
         }, 1000);
       } else {
-        toast.error(data.message || "Failed to approve event", {
-          style: {
-            background: "#DC2626",
-            color: "#FFFFFF",
-            border: "transparent",
-            borderRadius: "12px",
-            fontSize: "16px",
-            fontWeight: "semibold",
-            padding: "12px 16px",
-          },
-        });
+        toast.error(
+          data.message ||
+            "Failed to approve event. There's an event with the same title",
+          {
+            style: {
+              background: "#DC2626",
+              color: "#FFFFFF",
+              border: "transparent",
+              borderRadius: "12px",
+              fontSize: "16px",
+              fontWeight: "semibold",
+              padding: "12px 16px",
+            },
+          }
+        );
       }
     } catch {
-      toast.error("Failed to approve event", {
+      toast.error("Failed to approve event.", {
         style: {
           background: "#DC2626",
           color: "#FFFFFF",

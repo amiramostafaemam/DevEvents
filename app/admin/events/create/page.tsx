@@ -2,15 +2,9 @@
 "use client";
 
 import EventForm from "@/components/EventForm";
-import EventFormSkeleton from "@/components/EventFormSkeleton";
-import { Suspense } from "react";
 
 const AdminCreateEventPage = () => {
-  return (
-    <Suspense fallback={<EventFormSkeleton />}>
-      <EventForm createdBy="admin" />
-    </Suspense>
-  );
+  return <EventForm createdBy="admin" />;
 };
 
 export default AdminCreateEventPage;

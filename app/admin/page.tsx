@@ -1,6 +1,7 @@
 // app/admin/page.tsx
 import Link from "next/link";
 import EventsTable from "@/components/admin/EventsTable";
+import EventsTableSkeleton from "@/components/admin/EventsTableSkeleton";
 import PendingEvents from "@/components/admin/PendingEvents";
 import { getAllEvents } from "@/lib/actions/event.actions";
 import EventsStats from "./EventsStats";
@@ -58,9 +59,7 @@ const AdminEventsPage = async () => {
       )}
 
       {/* Events Table */}
-      <Suspense
-        fallback={<div className="text-slate-400">Loading events...</div>}
-      >
+      <Suspense fallback={<EventsTableSkeleton />}>
         <EventsTable events={events} />
       </Suspense>
     </div>
