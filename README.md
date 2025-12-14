@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![DevEvent Banner](https://raw.githubusercontent.com/amiramostafaemam/DevEvents/main/public/assets/images/banner.png)
+![DevEvent Banner](https://github.com/amiramostafaemam/DevEvents/commit/dc54db465e9e4a98f7973b426f32cb456f10e0fe#diff-8b1455378f56a929b7cc6f3a0804baf3f78dbdd5902eff1840d50ada5d6c67c0)
 
 **A modern, full-stack event management platform built for the developer community**
 
