@@ -2,7 +2,7 @@
 
 <div align="center">
 
-![DevEvent Banner](https://github.com/amiramostafaemam/DevEvents/commit/dc54db465e9e4a98f7973b426f32cb456f10e0fe#diff-8b1455378f56a929b7cc6f3a0804baf3f78dbdd5902eff1840d50ada5d6c67c0)
+![DevEvent Banner](public/assets/images/banner.PNG)
 
 **A modern, full-stack event management platform built for the developer community**
 
@@ -370,19 +370,19 @@ DevEvents/
 ## 📸 Screenshots
 
 ### Homepage
-![Homepage](https://raw.githubusercontent.com/amiramostafaemam/DevEvents/main/public/assets/screenshots/homepage.png)
+![Homepage](public/assets/screenshots/home-page.PNG)
 
 ### Event Creation Form
-![Event Creation](https://raw.githubusercontent.com/amiramostafaemam/DevEvents/main/public/assets/screenshots/create-event.png)
+![Event Creation](public/assets/screenshots/create-event.PNG)
 
 ### Event Details Page
-![Event Details](https://raw.githubusercontent.com/amiramostafaemam/DevEvents/main/public/assets/screenshots/event-details.png)
+![Event Details](public/assets/screenshots/event-details.PNG)
 
 ### Admin Dashboard
-![Admin Dashboard](https://raw.githubusercontent.com/amiramostafaemam/DevEvents/main/public/assets/screenshots/admin-dashboard.png)
+![Admin Dashboard](public/assets/screenshots/admin-dashboard.PNG)
 
 ### 404 Not Found Page
-![Not Found](https://raw.githubusercontent.com/amiramostafaemam/DevEvents/main/public/assets/screenshots/not-found.png)
+![Not Found](public/assets/screenshots/not-found.PNG)
 
 ---
 
