@@ -10,9 +10,9 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 // Separate async component for events list
 async function EventsList() {
-  "use cache";
-  cacheLife("hours");
-  const response = await fetch(`${BASE_URL}/api/events`, {});
+  const response = await fetch(`${BASE_URL}/api/events`, {
+    next: { revalidate: 3600 }
+  });
   const { events } = await response.json();
 
   if (!events || events.length === 0) {
