@@ -5,6 +5,7 @@ import EventsListSkeleton from "@/components/EventsListSkeleton";
 import { IEvent } from "@/database/event.model";
 import { cacheLife } from "next/cache";
 import { Suspense } from "react";
+import { getAllEvents } from "@/lib/actions/event.actions";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
