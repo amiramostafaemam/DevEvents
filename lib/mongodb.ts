@@ -47,9 +47,11 @@ async function connectDB(): Promise<typeof mongoose> {
         "Please define the MONGODB_URI environment variable inside .env.local"
       );
     }
-    const options = {
-      bufferCommands: false, // Disable Mongoose buffering
-    };
+   const options = {
+  bufferCommands: false,
+  serverSelectionTimeoutMS: 5000, // 5 seconds
+  socketTimeoutMS: 45000, // 45 seconds
+};
 
     // Create a new connection promise
     cached.promise = mongoose

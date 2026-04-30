@@ -17,18 +17,24 @@ const AdminEventsPage = async () => {
   const events = await getAllEvents();
 
   // Get pending events from PendingEvent collection
-  await connectDB();
-  const pendingEventsData = await PendingEvent.find({})
-    .sort({ createdAt: -1 })
-    .lean();
+  let pendingEvents: any[] = [];
+  try {
+    await connectDB();
+    const pendingEventsData = await PendingEvent.find({})
+      .sort({ createdAt: -1 })
+      .lean();
 
-  // Serialize pending events
-  const pendingEvents = pendingEventsData.map((event) => ({
-    ...event,
-    _id: event._id.toString(),
-    createdAt: event.createdAt?.toISOString(),
-    updatedAt: event.updatedAt?.toISOString(),
-  }));
+    // Serialize pending events
+    pendingEvents = pendingEventsData.map((event) => ({
+      ...event,
+      _id: event._id.toString(),
+      createdAt: event.createdAt?.toISOString(),
+      updatedAt: event.updatedAt?.toISOString(),
+    }));
+  } catch (error) {
+    console.error("Error fetching pending events:", error);
+    // Continue with empty array
+  }
 
   return (
     <div className="space-y-6">
