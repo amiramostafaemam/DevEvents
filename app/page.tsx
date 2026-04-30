@@ -10,11 +10,12 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 // Separate async component for events list
 async function EventsList() {
-  const response = await fetch(`${BASE_URL}/api/events`, {
-    next: { revalidate: 3600 }
-  });
-  const { events } = await response.json();
+  // const response = await fetch(`${BASE_URL}/api/events`, {
+  //   next: { revalidate: 3600 }
+  // });
+  // const { events } = await response.json();
 
+  const events = await getAllEvents();
   if (!events || events.length === 0) {
     return (
       <div className="text-center py-12">
