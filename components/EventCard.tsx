@@ -9,7 +9,6 @@ interface Props {
   location: string;
   date: string;
   time: string;
-  updatedAt?: Date | string;
 }
 
 const EventCard = ({
@@ -19,28 +18,11 @@ const EventCard = ({
   location,
   date,
   time,
-  updatedAt,
 }: Props) => {
-  // Safely handle date parsing to avoid Suspense boundary issues
-  let cacheKey = "";
-  if (updatedAt) {
-    try {
-      const dateObj =
-        typeof updatedAt === "string" ? new Date(updatedAt) : updatedAt;
-      if (!isNaN(dateObj.getTime())) {
-        cacheKey = dateObj.getTime().toString();
-      }
-    } catch (e) {
-      // Silently fail if date parsing fails
-      cacheKey = "";
-    }
-  }
-  const imageUrl = cacheKey ? `${image}?v=${cacheKey}` : image;
-
   return (
     <Link href={`/events/${slug}`} id="event-card">
       <Image
-        src={imageUrl}
+        src={image}
         alt={title}
         width={410}
         height={300}
