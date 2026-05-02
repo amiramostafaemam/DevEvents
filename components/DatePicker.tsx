@@ -222,7 +222,8 @@ export function Calendar28({
                 onSelect={handleDateChange}
                 month={month}
                 onMonthChange={setMonth}
-                fromYear={2026}
+                disabled={{ before: new Date() }}
+fromMonth={new Date()}
                 showOutsideDays
                 animate
                 components={{
